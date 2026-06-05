@@ -11,7 +11,10 @@
     "dependencies": {
         "@orpc/client": "^1.14.4",
         "@orpc/contract": "^1.14.4",
+        "@orpc/json-schema": "^1.14.4",
+        "@orpc/openapi": "^1.14.4",
         "@orpc/server": "^1.14.4",
+        "@orpc/zod": "^1.14.4",
         "@prisma/adapter-pg": "^7.8.0",
         "@prisma/client": "^7.8.0",
         "argon2": "^0.44.0",
@@ -19,7 +22,8 @@
         "dotenv": "^17.4.2",
         "next": "16.2.7",
         "pg": "^8.21.0",
-        "zod": "^4.4.3"
+        "zod": "^4.4.3",
+        "zod4": "link:@orpc/zod/zod4"
     },
     "devDependencies": {
         "@types/bcrypt": "^6.0.0",

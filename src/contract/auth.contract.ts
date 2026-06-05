@@ -58,6 +58,7 @@ export const RegisterUserContract = base
         summary: "New User creation",
         description:
             "Creating user and populating User Table, email is not verified at this point",
+        tags:["auth"]
     })
     .input(RegisterUserInputSchema)
     .output(RegisterUserOutputSchema);

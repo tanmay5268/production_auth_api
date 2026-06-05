@@ -10,12 +10,12 @@ import type {
 
 export const UserSchema = z.object({
   id: z.string(),
-  name: z.string().nullable(),
-  email: z.email().nullable(),
-  password: z.string().nullable(),
+  name: z.string(),
+  email: z.email(),
+  password: z.string().min(8),
   emailVerified: z.date().nullable(),
   image: z.string().nullable(),
-}) satisfies z.ZodType<User>;
+  })
 
 export const AccountSchema: z.ZodType<Account> = z.object({
   userId: z.string(),
@@ -55,4 +55,3 @@ export const AuthenticatorSchema: z.ZodType<Authenticator> = z.object({
   credentialBackedUp: z.boolean(),
   transports: z.string().nullable(),
 });
-
