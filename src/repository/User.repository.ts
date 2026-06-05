@@ -1,6 +1,7 @@
 import { prisma } from "@/utils/prisma";
 
-const VERIFICATION_TOKEN_TTL_MS = 1000 * 60 * 60;
+const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
+const VERIFICATION_TOKEN_TTL_MS = MILLISECONDS_IN_HOUR;
 
 type CreateVerificationTokenInput = {
     identifier: string;
