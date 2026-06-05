@@ -5,6 +5,18 @@ import {
     RegisterUserInputSchema,
 } from "@/schema/auth.schema";
 export const base = oc.errors({
+    BAD_REQUEST: {
+        status: 400,
+        message: "Invalid request data",
+        data: z.object({
+            field: z.string().min(3),
+            issue: z.string().min(3),
+        })
+    },
+    TOO_MANY_REQUESTS: {
+        status: 429,
+        message: "You have exceeded your allowed rate limit of 100 requests per minute.",
+    },
     UNAUTHORIZED: {
         status: 401,
         message: "Authentication required",
@@ -26,7 +38,7 @@ export const base = oc.errors({
         message: "Resource conflict",
         data: z.object({
             field: z.string(),
-            value: z.string(),
+            value: z.string().nullable(),
         }),
     },
     DOMAIN_RULE_VIOLATION: {

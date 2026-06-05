@@ -7,7 +7,7 @@ export const RegisterUserInputSchema = UserSchema.pick({
     email: true,
     password: true,
 });
-
+export type RegisterUserInputType = z.infer<typeof RegisterUserInputSchema>
 //output schemas ---------------------------------------------------
 export const RegisterUserOutputSchema = z.object({
     message: z.string(),
