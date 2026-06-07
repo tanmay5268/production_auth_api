@@ -18,7 +18,7 @@ class AuthFunctions{
     }
 
     GenerateURL(token:string): string{
-        const URL = `${configuration.getAuthurl()}+/verify?token=${token}`;
+        const URL = `${configuration.getAuthurl()}/verify?token=${token}`;
         return URL;
     }
 }

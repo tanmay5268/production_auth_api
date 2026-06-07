@@ -2,6 +2,7 @@ allowBuilds:
   '@prisma/engines': set this to true or false
   argon2: set this to true or false
   bcrypt: true
+  esbuild: true
   prisma: set this to true or false
   sharp: true
 ignoredBuiltDependencies:

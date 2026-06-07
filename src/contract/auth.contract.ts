@@ -41,6 +41,14 @@ export const base = oc.errors({
             value: z.string().nullable(),
         }),
     },
+    INTERNAL_SERVER_ERROR: {
+        status: 500,
+        message: "An unexpected error occurred",
+        data: z.object({
+            errorId: z.string().optional(),
+            details: z.string(),
+        }),
+    },
     DOMAIN_RULE_VIOLATION: {
         status: 422,
         message: "Business rule violation",
