@@ -38,10 +38,10 @@ export const SessionSchema: z.ZodType<Session> = z.object({
   expires: z.date(),
 });
 
-export const VerificationTokenSchema: z.ZodType<VerificationToken> = z.object({
-  identifier: z.string(),
+export const VerificationTokenSchema = z.object({
+  identifier: z.email(),
   token: z.string(),
-  expires: z.date(),
+  expires: z.date()
 });
 
 export const AuthenticatorSchema: z.ZodType<Authenticator> = z.object({

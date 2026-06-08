@@ -1,6 +1,7 @@
 import crypto from "crypto"
 import bcrypt from "bcrypt";
 import { configuration } from "@/utils/configurations";
+import { Useroperations } from "@/repository/User.repository";
 class AuthFunctions{
     async HashPayload(payload: string): Promise<string> {
         try {
@@ -20,6 +21,9 @@ class AuthFunctions{
     GenerateURL(token:string): string{
         const URL = `${configuration.getAuthurl()}/verify?token=${token}`;
         return URL;
+    }
+    async VerifyUser(email: string, token: string) {
+        await Useroperations.verifyUser(email, token);
     }
 }
 export const AuthService = new AuthFunctions;

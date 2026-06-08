@@ -16,7 +16,7 @@ const handler = new OpenAPIHandler(router, {
       schemaConverters,
       specGenerateOptions: {
         info: {
-          title: "Tutorial API",
+          title: "production-auth-api",
           version: "1.0.0",
           description:
             "Production-grade Tutorial API built with ORPC and Next.js",

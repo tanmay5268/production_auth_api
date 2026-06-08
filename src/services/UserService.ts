@@ -1,15 +1,26 @@
-import { RegisterUserInputType } from "@/schema/auth.schema";
-import { operation } from "@/repository/User.repository";
+import {
+    RegisterUserInputType,
+    VerifyUserInputType,
+} from "@/schema/auth.schema";
+import { Useroperations } from "@/repository/User.repository";
 
 class UserFunctions {
     async UserExists({
         email,
     }: Pick<RegisterUserInputType, "email">): Promise<Boolean> {
-        const User = await operation.finduser(email);
+        const User = await Useroperations.finduser(email);
         return !!User;
     }
-    async RegisterUser(payload: RegisterUserInputType & { hashtoken: string }) {
-        await operation.saveRegistration(payload)
+    async RegisterUser(payload: RegisterUserInputType & { token: string }) {
+        await Useroperations.saveRegistration(payload);
+    }
+    async GetTokenDetails(userToken: VerifyUserInputType) {
+        const tokenDetails = await Useroperations.findTokenDetails(userToken);
+        return tokenDetails;
+    }
+    CheckExpiry(timeLimit: Date): boolean {
+        const NowTime = new Date();
+        return NowTime.getTime() > timeLimit.getTime();
     }
 }
 

@@ -1,9 +1,6 @@
 import { oc } from "@orpc/contract";
 import * as z from "zod";
-import {
-    RegisterUserOutputSchema,
-    RegisterUserInputSchema,
-} from "@/schema/auth.schema";
+import * as schema from "@/schema/auth.schema";
 export const base = oc.errors({
     BAD_REQUEST: {
         status: 400,
@@ -11,11 +8,12 @@ export const base = oc.errors({
         data: z.object({
             field: z.string().min(3),
             issue: z.string().min(3),
-        })
+        }),
     },
     TOO_MANY_REQUESTS: {
         status: 429,
-        message: "You have exceeded your allowed rate limit of 100 requests per minute.",
+        message:
+            "You have exceeded your allowed rate limit of 100 requests per minute.",
     },
     UNAUTHORIZED: {
         status: 401,
@@ -29,8 +27,8 @@ export const base = oc.errors({
         status: 404,
         message: "Resource not found",
         data: z.object({
-            resourceType: z.string(),
-            resourceId: z.string(),
+            resource: z.string(),
+            issue: z.string(),
         }),
     },
     CONFLICT: {
@@ -66,7 +64,18 @@ export const RegisterUserContract = base
         summary: "New User creation",
         description:
             "Creating user and populating User Table, email is not verified at this point",
-        tags:["auth"]
+        tags: ["auth"],
     })
-    .input(RegisterUserInputSchema)
-    .output(RegisterUserOutputSchema);
+    .input(schema.RegisterUserInputSchema)
+    .output(schema.RegisterUserOutputSchema);
+
+export const VerifyUserContract = base
+    .route({
+        method: "POST",
+        path: "/api/auth/verify/{token}",
+        successStatus: 200,
+        summary: "Verifying Email",
+        description: "Verifying user through generated tokens."
+    })
+    .input(schema.VerifyUserInputSchema)
+    .output(schema.VerifyUserOutputSchema);
