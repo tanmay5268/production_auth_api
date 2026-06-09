@@ -67,6 +67,7 @@ export const VerifyToken = os.production_auth_api.verify.handler(
         }
         const timeLimit = tokenDetails.expires;
         const isExpired = UserService.CheckExpiry(timeLimit);
+        console.log(isExpired);
         if (isExpired) {
             throw errors.BAD_REQUEST({
                 data: {
