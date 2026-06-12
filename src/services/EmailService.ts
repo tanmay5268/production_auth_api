@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import { configuration } from '@/utils/configurations';
+import { Resend } from 'resend';
+import { env } from '@/utils/configurations';
 import VerificationEmail from '@/emails/VerificationEmail';
 class EmailFunctions {
   async sendMail({
@@ -11,7 +12,7 @@ class EmailFunctions {
     email: string;
     username: string;
   }) {
-      const resend = configuration.getMailService();
+      const resend = new Resend(env.MAIL_SERVICE_API_KEY); ;
       console.log('Attempting to send email to:', email);
       console.log('Verification URL:', VERIFICATION_URL);
       

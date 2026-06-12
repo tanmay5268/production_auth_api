@@ -1,6 +1,6 @@
 import crypto from "crypto"
 import bcrypt from "bcrypt";
-import { configuration } from "@/utils/configurations";
+import { env } from "@/utils/configurations";
 import { Useroperations } from "@/repository/User.repository";
 class AuthFunctions{
     async HashPayload(payload: string): Promise<string> {
@@ -19,7 +19,7 @@ class AuthFunctions{
     }
 
     GenerateURL(token:string): string{
-        const URL = `${configuration.getAuthurl()}/verify?token=${token}`;
+        const URL = `${env.AUTH_BASE_URL}/verify?token=${token}`;
         return URL;
     }
     async VerifyUser(email: string, token: string) {

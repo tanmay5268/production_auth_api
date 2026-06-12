@@ -1,4 +1,3 @@
-import { configuration } from "@/utils/configurations";
 import { implement } from "@orpc/server";
 import { contract } from "@/contract/index";
 import { UserService } from "@/services/UserService";
