@@ -21,7 +21,7 @@ export const base = oc.errors({
     },
     FORBIDDEN: {
         status: 403,
-        message: "You must have permission to perform this action",
+        message: "You dont have required permissions to perform this action",
     },
     NOT_FOUND: {
         status: 404,
@@ -75,7 +75,8 @@ export const VerifyUserContract = base
         path: "/api/auth/verify/{token}",
         successStatus: 200,
         summary: "Verifying Email",
-        description: "Verifying user through generated tokens."
+        description: "Verifying user through generated tokens.",
+        tags:["auth"],
     })
     .input(schema.VerifyUserInputSchema)
     .output(schema.VerifyUserOutputSchema);
