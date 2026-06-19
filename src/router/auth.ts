@@ -3,6 +3,9 @@ import { contract } from "@/contract/index";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
+import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
+import { env } from "@/utils/configurations";
+import { Resend } from "resend";
 const os = implement(contract);
 
 export const RegisterUser = os.production_auth_api.register.handler(
@@ -47,6 +50,72 @@ export const RegisterUser = os.production_auth_api.register.handler(
         return {
             statusCode: 201,
             message: "userCreated",
+        };
+    },
+);
+
+export const ForgotPassword = os.production_auth_api.forgotPassword.handler(
+    async ({ input, errors }) => {
+        const { email } = input;
+        const userExists = await UserService.UserExists({ email });
+        if (!userExists) {
+            return {
+                statusCode: 200,
+                message:
+                    "If an account with that email exists, a password reset link has been sent.",
+            };
+        }
+        const token = AuthService.GenerateToken();
+        const RESET_URL: string = AuthService.GenerateResetURL(token);
+        await UserService.SaveResetToken(email, token);
+        const resend = new Resend(env.MAIL_SERVICE_API_KEY);
+        await resend.emails.send({
+            from: "production-auth-api@resend.dev",
+            to: email,
+            subject: "Reset your password",
+            react: ResetPasswordEmail({
+                username: email,
+                reseturl: RESET_URL,
+            }),
+        });
+        return {
+            statusCode: 200,
+            message:
+                "If an account with that email exists, a password reset link has been sent.",
+        };
+    },
+);
+
+export const ResetPassword = os.production_auth_api.resetPassword.handler(
+    async ({ input, errors }) => {
+        const { token, password } = input;
+        const tokenDetails = await UserService.GetTokenDetails({ token });
+        if (!tokenDetails) {
+            throw errors.NOT_FOUND({
+                data: {
+                    resource: "token",
+                    issue: "Reset token not found in database",
+                },
+            });
+        }
+        const isExpired = UserService.CheckExpiry(tokenDetails.expires);
+        if (isExpired) {
+            throw errors.BAD_REQUEST({
+                data: {
+                    field: "token",
+                    issue: "Token has expired",
+                },
+            });
+        }
+        const hashedPassword = await AuthService.HashPayload(password);
+        await UserService.ResetPassword(
+            tokenDetails.identifier,
+            token,
+            hashedPassword,
+        );
+        return {
+            statusCode: 200,
+            message: "Password has been reset successfully.",
         };
     },
 );

@@ -3,6 +3,8 @@ import * as contracts from "./auth.contract";
 export const contract = {
     production_auth_api: {
         register: contracts.RegisterUserContract,
-        verify:contracts.VerifyUserContract
+        verify:contracts.VerifyUserContract,
+        forgotPassword: contracts.ForgotPasswordContract,
+        resetPassword: contracts.ResetPasswordContract,
     }
 }

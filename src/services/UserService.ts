@@ -22,6 +22,12 @@ class UserFunctions {
         const NowTime = new Date();
         return NowTime.getTime() > timeLimit.getTime();
     }
+    async SaveResetToken(email: string, token: string) {
+        await Useroperations.saveResetToken(email, token);
+    }
+    async ResetPassword(email: string, token: string, hashedPassword: string) {
+        await Useroperations.resetPassword(email, token, hashedPassword);
+    }
 }
 
 export const UserService = new UserFunctions();

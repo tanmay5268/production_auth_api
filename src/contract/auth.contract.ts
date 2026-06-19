@@ -80,3 +80,27 @@ export const VerifyUserContract = base
     })
     .input(schema.VerifyUserInputSchema)
     .output(schema.VerifyUserOutputSchema);
+
+export const ForgotPasswordContract = base
+    .route({
+        method: "POST",
+        path: "/api/auth/forgot-password",
+        successStatus: 200,
+        summary: "Forgot Password",
+        description: "Sends a password reset email if the account exists.",
+        tags: ["auth"],
+    })
+    .input(schema.ForgotPasswordInputSchema)
+    .output(schema.ForgotPasswordOutputSchema);
+
+export const ResetPasswordContract = base
+    .route({
+        method: "POST",
+        path: "/api/auth/reset-password",
+        successStatus: 200,
+        summary: "Reset Password",
+        description: "Resets the password using a valid token.",
+        tags: ["auth"],
+    })
+    .input(schema.ResetPasswordInputSchema)
+    .output(schema.ResetPasswordOutputSchema);

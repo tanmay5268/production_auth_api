@@ -22,6 +22,11 @@ class AuthFunctions{
         const URL = `${env.AUTH_BASE_URL}/verify?token=${token}`;
         return URL;
     }
+
+    GenerateResetURL(token: string): string {
+        const URL = `${env.AUTH_BASE_URL}/reset-password?token=${token}`;
+        return URL;
+    }
     async VerifyUser(email: string, token: string) {
         await Useroperations.verifyUser(email, token);
     }

@@ -4,6 +4,7 @@ import type { User, VerificationToken } from "../../generated/prisma";
 import {
     RegisterUserInputType,
     VerifyUserInputType,
+    ResetPasswordInputType,
 } from "@/schema/auth.schema";
 class UserOperations {
     async finduser(email: string): Promise<User | null> {
@@ -57,6 +58,38 @@ class UserOperations {
                 },
                 data: {
                     emailVerified: Nowtime,
+                },
+            }),
+            prisma.verificationToken.delete({
+                where: {
+                    token,
+                },
+            }),
+        ]);
+    }
+
+    async saveResetToken(identifier: string, token: string): Promise<void> {
+        await prisma.verificationToken.create({
+            data: {
+                identifier,
+                token,
+                expires: new Date(Date.now() + 60 * 60 * 1000),
+            },
+        });
+    }
+
+    async resetPassword(
+        email: string,
+        token: string,
+        hashedPassword: string,
+    ): Promise<void> {
+        await prisma.$transaction([
+            prisma.user.update({
+                where: {
+                    email,
+                },
+                data: {
+                    password: hashedPassword,
                 },
             }),
             prisma.verificationToken.delete({
