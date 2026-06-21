@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-
+import { env } from "@/utils/configurations";
 export async function GET(request: Request) {
   const { origin } = new URL(request.url);
 
   return NextResponse.json({
-    link: `${origin}/api/auth`,
+    status:`Server running in ${env.NODE_ENV} mode`,
+    message: `Server is running at ${origin}`,
   });
 }

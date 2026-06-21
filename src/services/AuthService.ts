@@ -1,6 +1,6 @@
 import crypto from "crypto"
 import bcrypt from "bcrypt";
-import { env } from "@/utils/configurations";
+import { env } from "@/utils/configurations"
 import { Useroperations } from "@/repository/User.repository";
 class AuthFunctions{
     async HashPayload(payload: string): Promise<string> {
