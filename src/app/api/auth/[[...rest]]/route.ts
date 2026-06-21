@@ -42,7 +42,7 @@ const handler = new OpenAPIHandler(router, {
 
 async function handleRequest(request: Request) {
   const { response } = await handler.handle(request, {
-    prefix: "/api",
+    prefix: "/api/auth",
     context: { headers: request.headers },
   });
 

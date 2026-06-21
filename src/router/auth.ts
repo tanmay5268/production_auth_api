@@ -3,9 +3,6 @@ import { contract } from "@/contract/index";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
-import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
-import { env } from "@/utils/configurations";
-import { Resend } from "resend";
 const os = implement(contract);
 
 export const RegisterUser = os.production_auth_api.register.handler(
@@ -68,16 +65,17 @@ export const ForgotPassword = os.production_auth_api.forgotPassword.handler(
         const token = AuthService.GenerateToken();
         const RESET_URL: string = AuthService.GenerateResetURL(token);
         await UserService.SaveResetToken(email, token);
-        const resend = new Resend(env.MAIL_SERVICE_API_KEY);
-        await resend.emails.send({
-            from: "production-auth-api@resend.dev",
-            to: email,
-            subject: "Reset your password",
-            react: ResetPasswordEmail({
-                username: email,
-                reseturl: RESET_URL,
-            }),
+        const response = await EmailService.sendResetPasswordMail({
+            email,
+            RESET_URL,
+            username: email.split("@")[0],
         });
+        if (response.error)
+            throw errors.INTERNAL_SERVER_ERROR({
+                data: {
+                    details: "Failed to send reset password email",
+                },
+            });
         return {
             statusCode: 200,
             message:
