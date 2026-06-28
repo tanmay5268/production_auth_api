@@ -59,7 +59,7 @@ export const base = oc.errors({
 export const RegisterUserContract = base
     .route({
         method: "POST",
-        path: "/api/auth/register",
+        path: "/register",
         successStatus: 201,
         summary: "New User creation",
         description:
@@ -72,7 +72,7 @@ export const RegisterUserContract = base
 export const VerifyUserContract = base
     .route({
         method: "POST",
-        path: "/api/auth/verify/{token}",
+        path: "/verify/{token}",
         successStatus: 200,
         summary: "Verifying Email",
         description: "Verifying user through generated tokens.",
@@ -84,7 +84,7 @@ export const VerifyUserContract = base
 export const ForgotPasswordContract = base
     .route({
         method: "POST",
-        path: "/api/auth/forgot-password",
+        path: "/forgot-password",
         successStatus: 200,
         summary: "Forgot Password",
         description: "Sends a password reset email if the account exists.",
@@ -96,7 +96,7 @@ export const ForgotPasswordContract = base
 export const ResetPasswordContract = base
     .route({
         method: "POST",
-        path: "/api/auth/reset-password",
+        path: "/reset-password",
         successStatus: 200,
         summary: "Reset Password",
         description: "Resets the password using a valid token.",
