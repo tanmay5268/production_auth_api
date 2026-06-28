@@ -51,6 +51,41 @@ export const RegisterUser = os.production_auth_api.register.handler(
     },
 );
 
+export const VerifyToken = os.production_auth_api.verify.handler(
+    async ({ input, errors }) => {
+        //extract token
+        // find token in db get all details
+        const tokenDetails = await UserService.GetTokenDetails(input);
+        if (!tokenDetails) {
+            throw errors.NOT_FOUND({
+                data: {
+                    resource: "tokenDetails",
+                    issue: "token details not found in database",
+                },
+            });
+        }
+        const timeLimit = tokenDetails.expires;
+        const isExpired = UserService.CheckExpiry(timeLimit);
+        console.log(isExpired);
+        if (isExpired) {
+            throw errors.BAD_REQUEST({
+                data: {
+                    field: "token",
+                    issue: "Token has expired",
+                },
+            });
+        }
+        // find the email in user db and mak it verified && delete token from tokendb
+        await AuthService.VerifyUser(tokenDetails.identifier, tokenDetails.token);
+        // succes
+        return {
+            identifier: tokenDetails.identifier,
+            statusCode: 200,
+            message: "User verified",
+        };
+    },
+);
+
 export const ForgotPassword = os.production_auth_api.forgotPassword.handler(
     async ({ input, errors }) => {
         const { email } = input;
@@ -118,37 +153,3 @@ export const ResetPassword = os.production_auth_api.resetPassword.handler(
     },
 );
 
-export const VerifyToken = os.production_auth_api.verify.handler(
-    async ({ input, errors }) => {
-        //extract token
-        // find token in db get all details
-        const tokenDetails = await UserService.GetTokenDetails(input);
-        if (!tokenDetails) {
-            throw errors.NOT_FOUND({
-                data: {
-                    resource: "tokenDetails",
-                    issue: "token details not found in database",
-                },
-            });
-        }
-        const timeLimit = tokenDetails.expires;
-        const isExpired = UserService.CheckExpiry(timeLimit);
-        console.log(isExpired);
-        if (isExpired) {
-            throw errors.BAD_REQUEST({
-                data: {
-                    field: "token",
-                    issue: "Token has expired",
-                },
-            });
-        }
-        // find the email in user db and mak it verified && delete token from tokendb
-        await AuthService.VerifyUser(tokenDetails.identifier, tokenDetails.token);
-        // succes
-        return {
-            identifier: tokenDetails.identifier,
-            statusCode: 200,
-            message: "User verified",
-        };
-    },
-);
