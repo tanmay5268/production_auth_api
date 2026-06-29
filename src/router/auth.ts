@@ -1,5 +1,5 @@
 import { implement } from "@orpc/server";
-import { contract } from "@/contract/index";
+import { contract } from "@/contract";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";

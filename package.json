@@ -9,7 +9,6 @@
         "start": "next start"
     },
     "dependencies": {
-        "@tanmay5268/auth-core": "workspace:*",
         "@orpc/client": "^1.14.4",
         "@orpc/contract": "^1.14.4",
         "@orpc/json-schema": "^1.14.4",
