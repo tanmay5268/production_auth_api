@@ -4,6 +4,7 @@ import { env } from '@/utils/configurations';
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
 import VerificationEmail from '@/emails/VerificationEmail';
 class EmailFunctions {
+    private resend = new Resend(env.MAIL_SERVICE_API_KEY);
   async sendMail({
     VERIFICATION_URL,
     email,
@@ -13,11 +14,11 @@ class EmailFunctions {
     email: string;
     username: string;
   }) {
-      const resend = new Resend(env.MAIL_SERVICE_API_KEY); ;
+      
       console.log('Attempting to send email to:', email);
       console.log('Verification URL:', VERIFICATION_URL);
       
-       const response = await resend.emails.send({
+       const response = await this.resend.emails.send({
         from: 'production-auth-api@resend.dev',
         to: email,
         subject: 'Verify your email address',
@@ -37,11 +38,9 @@ class EmailFunctions {
     email: string;
     username: string;
   }) {
-      const resend = new Resend(env.MAIL_SERVICE_API_KEY); ;
       console.log('Attempting to send reset password email to:', email);
       console.log('Reset URL:', RESET_URL);
-      
-       const response = await resend.emails.send({
+       const response = await this.resend.emails.send({
         from: 'production-auth-api@resend.dev',
         to: email,
         subject: 'Reset your password',
