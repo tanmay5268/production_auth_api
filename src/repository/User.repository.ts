@@ -50,7 +50,7 @@ class UserOperations {
         });
         return tokenDetails ? tokenDetails : null;
     }
-    async verifyUser(email: string, token: string) {
+    async makeUserverified(email: string, token: string) {
         const Nowtime = new Date();
         await prisma.$transaction([
             prisma.user.update({

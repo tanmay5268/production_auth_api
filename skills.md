@@ -345,7 +345,7 @@ contract = {
 - `GenerateToken()` — crypto.randomBytes(16).toString('hex')
 - `GenerateURL(token)` — `{AUTH_BASE_URL}/verify?token={token}`
 - `GenerateResetURL(token)` — `{AUTH_BASE_URL}/reset-password?token={token}`
-- `VerifyUser(email, token)` — delegates to Useroperations.verifyUser
+- `makeUserverified(email, token)` — delegates to Useroperations.makeUserverified
 
 **`UserService.ts`** (class `UserFunctions`):
 - `UserExists({email})` — checks if user exists in DB
@@ -365,7 +365,7 @@ contract = {
 - `finduser(email)` → `prisma.user.findUnique` → returns User or null
 - `saveRegistration(payload)` → Prisma `$transaction([user.create, verificationToken.create])` — token expires in 1 hour
 - `findTokenDetails(payload)` → `prisma.verificationToken.findUnique` by token
-- `verifyUser(email, token)` → `$transaction([user.update(emailVerified=now), verificationToken.delete])`
+- `makeUserverified(email, token)` → `$transaction([user.update(emailVerified=now), verificationToken.delete])`
 - `saveResetToken(identifier, token)` → `prisma.verificationToken.create` with 1 hour expiry
 - `resetPassword(email, token, hashedPassword)` → `$transaction([user.update(password=hash), verificationToken.delete])`
 

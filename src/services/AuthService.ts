@@ -27,8 +27,8 @@ class AuthFunctions{
         const URL = `${env.AUTH_BASE_URL}/reset-password?token=${token}`;
         return URL;
     }
-    async VerifyUser(email: string, token: string) {
-        await Useroperations.verifyUser(email, token);
+    async makeUserverified(email: string, token: string) {
+        await Useroperations.makeUserverified(email, token);
     }
     async verifyPassword(plain: string, hash: string): Promise<boolean> {
         return bcrypt.compare(plain, hash);

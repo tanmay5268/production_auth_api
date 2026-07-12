@@ -74,7 +74,7 @@ export const VerifyToken = os.production_auth_api.verify.handler(
             });
         }
         // find the email in user db and mak it verified && delete token from tokendb
-        await AuthService.VerifyUser(tokenDetails.identifier, tokenDetails.token);
+        await AuthService.makeUserverified(tokenDetails.identifier, tokenDetails.token);
         // succes
         return {
             identifier: tokenDetails.identifier,
