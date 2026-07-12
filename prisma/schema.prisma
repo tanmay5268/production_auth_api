@@ -18,7 +18,7 @@ model Account {
   provider          String
   providerAccountId String
   refresh_token     String?
-  access_token      String?
+  access_token      String? 
   expires_at        Int?
   token_type        String?
   scope             String?
@@ -29,7 +29,18 @@ model Account {
 
   @@id([provider, providerAccountId])
 }
+model RefreshToken {
+  id          String   @id @default(cuid())
 
+  tokenHash   String   @unique
+
+  userId      String
+
+  expiresAt   DateTime
+  revokedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -50,6 +61,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
+  RefreshToken  RefreshToken[]
 }
 
 model VerificationToken {

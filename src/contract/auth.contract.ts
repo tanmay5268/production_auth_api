@@ -119,3 +119,13 @@ export const loginJwtSessionContract = base
     })
     .input(schema.loginInputSchema)
     .output(schema.loginOutputSchema);
+
+export const loginAccessRefresh = base.route({
+    method: "POST",
+    path: "/auth/login_access_refresh",
+    successStatus: 200,
+    
+    successDescription:"Acesss token with jwt and refres token with crypto"
+})
+    .input(schema.loginInputSchema)
+    .output(schema.loginOutputSchema);
