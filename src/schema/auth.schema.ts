@@ -45,3 +45,20 @@ export const ResetPasswordOutputSchema = z.object({
     message: z.string(),
     statusCode: z.number().int(),
 });
+
+export const loginInputSchema = RegisterUserInputSchema.pick({
+    email: true,
+    password:true
+})
+export type loginInputType= z.infer<typeof loginInputSchema>
+
+export const loginOutputSchema = z.object({
+  statusCode: z.literal(200),
+  message: z.literal('Login successful'),
+  user: z.object({
+    id: z.string(),
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+  }),
+  // sessionToken is NOT returned in the body — it's set via httpOnly cookie.
+});

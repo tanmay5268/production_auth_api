@@ -12,8 +12,7 @@ export const base = oc.errors({
     },
     TOO_MANY_REQUESTS: {
         status: 429,
-        message:
-            "You have exceeded your allowed rate limit of 100 requests per minute.",
+        message: "You have exceeded your allowed rate limit",
     },
     UNAUTHORIZED: {
         status: 401,
@@ -22,6 +21,9 @@ export const base = oc.errors({
     FORBIDDEN: {
         status: 403,
         message: "You dont have required permissions to perform this action",
+        data: z.object({
+            reason: z.enum(["Locked", "Unverified"]),
+        }),
     },
     NOT_FOUND: {
         status: 404,
@@ -104,3 +106,16 @@ export const ResetPasswordContract = base
     })
     .input(schema.ResetPasswordInputSchema)
     .output(schema.ResetPasswordOutputSchema);
+
+export const loginJwtSessionContract = base
+    .route({
+        method: "POST",
+        path: "/auth/loginjwtsession",
+        successStatus: 200,
+        tags: ["auth"],
+        description:
+            "Session cookie flow (top): every step after login touches the database. The session is a row you look up on every single request. Simple, fully revocable, one moving part.",
+        successDescription: "statusCode with Jwt-cookie",
+    })
+    .input(schema.loginInputSchema)
+    .output(schema.loginOutputSchema);
