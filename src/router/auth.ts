@@ -1,9 +1,7 @@
-import { implement } from "@orpc/server";
-import { contract } from "@/contract";
+import { os } from "./os";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
-const os = implement(contract);
 
 export const RegisterUser = os.production_auth_api.register.handler(
     async ({ input, errors }) => {
@@ -153,3 +151,29 @@ export const ResetPassword = os.production_auth_api.resetPassword.handler(
     },
 );
 
+export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.handler(
+    async ({ input, context, errors }) => {
+    const result = await UserService.loginjwtsession({
+      email: input.email,
+      password: input.password,
+    });
+  
+  // Set httpOnly session cookie via response headers
+  context.resHeaders.append(
+    "Set-Cookie",
+    [
+      `session_token=${result.sessionToken}`,
+      "Path=/",
+      "HttpOnly",
+      "Secure",
+      "SameSite=Lax",
+      `Expires=${result.expires.toUTCString()}`,
+    ].join("; ")
+  );
+
+  return {
+    statusCode: 200 ,
+    message: "Login successful",
+    user: result.user,
+  };
+});

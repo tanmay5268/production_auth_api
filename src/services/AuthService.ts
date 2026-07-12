@@ -30,5 +30,16 @@ class AuthFunctions{
     async VerifyUser(email: string, token: string) {
         await Useroperations.verifyUser(email, token);
     }
+    async verifyPassword(plain: string, hash: string): Promise<boolean> {
+        return bcrypt.compare(plain, hash);
+      }
+    
+      generateSessionToken(): string {
+        return crypto.randomBytes(32).toString('hex'); // 64 chars, high entropy
+      }
+    
+      getSessionExpiry(days = 7): Date {
+        return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+      }
 }
 export const AuthService = new AuthFunctions;
