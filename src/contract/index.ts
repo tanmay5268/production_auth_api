@@ -7,6 +7,7 @@ export const contract = {
         verify:contracts.VerifyUserContract,
         forgotPassword: contracts.ForgotPasswordContract,
         resetPassword: contracts.ResetPasswordContract,
-        loginwithJwtSession:contracts.loginJwtSessionContract
+        loginwithJwtSession: contracts.loginJwtSessionContract,
+        loginAccessRefresh: contracts.loginAccessRefresh
     }
 }
