@@ -24,4 +24,4 @@ export const os = implement(contract)
         resHeaders: Headers;
         ratelimiter?: typeof ratelimiter;
     }>()
-    // .use(rateLimitMiddleware)
+    .use(rateLimitMiddleware)

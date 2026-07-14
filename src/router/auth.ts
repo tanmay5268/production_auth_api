@@ -151,7 +151,7 @@ export const ResetPassword = os.production_auth_api.resetPassword.handler(
     },
 );
 
-export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.use(rateLimitMiddleware).handler(
+export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.handler(
     async ({ input, context, errors }) => {
 
     const result = await UserService.loginjwtsession({
