@@ -2,6 +2,7 @@ import { os } from "./os";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
+import { Useroperations } from "@/repository/User.repository";
 
 export const RegisterUser = os.production_auth_api.register.handler(
     async ({ input, errors }) => {
@@ -177,3 +178,35 @@ export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.handle
     user: result.user,
   };
 });
+
+export const LoginAccessRefresh = os.production_auth_api.loginAccessRefresh.handler(async ({ context, input }) => {
+    const agent = context.headers.get("user-agent")
+    const payload = {
+        input: input,
+        agent:agent
+    }
+    const result = await UserService.loginAccessRefresh(payload)
+    // Two separate Set-Cookie headers
+    context.resHeaders.append("Set-Cookie", [
+        `refreshToken=${result.refreshToken}`,
+        "Path=/",
+        "HttpOnly",
+        "Secure",
+        "SameSite=Strict",
+        `Expires=${result.expires.toUTCString()}`,
+    ].join("; "));
+    
+    context.resHeaders.append("Set-Cookie", [
+        `accessToken=${result.accessToken}`,
+        "Path=/",
+        "HttpOnly",
+        "Secure",
+        "SameSite=Strict",
+        `Expires=${result.expires.toUTCString()}`,
+    ].join("; "));
+    return {
+      statusCode: 200 ,
+      message: "Login successful",
+      user: result.user,
+    };
+})

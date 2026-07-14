@@ -38,8 +38,13 @@ model RefreshToken {
 
   expiresAt   DateTime
   revokedAt   DateTime?
+  replacedBy   String?             
+  userAgent    String?
+  createdAt    DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 model Session {
   id           String   @id @default(cuid())

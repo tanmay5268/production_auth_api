@@ -116,15 +116,17 @@ export const loginJwtSessionContract = base
         description:
             "Session cookie flow (top): every step after login touches the database. The session is a row you look up on every single request. Simple, fully revocable, one moving part.",
         successDescription: "statusCode with Jwt-cookie",
+        summary:"jwtsessionlogin"
     })
     .input(schema.loginInputSchema)
     .output(schema.loginOutputSchema);
 
 export const loginAccessRefresh = base.route({
     method: "POST",
+    tags:['auth'],
     path: "/auth/login_access_refresh",
     successStatus: 200,
-    
+    summary:"refreshAccess flow",
     successDescription:"Acesss token with jwt and refres token with crypto"
 })
     .input(schema.loginInputSchema)

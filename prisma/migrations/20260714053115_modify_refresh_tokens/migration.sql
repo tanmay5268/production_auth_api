@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "RefreshToken" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "ipAddress" TEXT,
+ADD COLUMN     "replacedBy" TEXT,
+ADD COLUMN     "userAgent" TEXT;
+
+-- CreateIndex
+CREATE INDEX "RefreshToken_userId_idx" ON "RefreshToken"("userId");
