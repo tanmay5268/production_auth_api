@@ -13,6 +13,9 @@ const envSchema = z.object({
         .string()
         .startsWith("re_")
         .nonempty("MAIL_SERVICE_API_KEY is required"),
+    ACCESS_TOKEN_SECRET: z.string().min(32),
+    ACCESS_TOKEN_TTL: z.coerce.number().default(900),
+    REFRESH_TOKEN_TTL_DAYS: z.coerce.number().default(30),
 });
 
 export type EnvVariables = z.infer<typeof envSchema>;

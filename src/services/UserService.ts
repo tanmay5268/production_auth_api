@@ -6,6 +6,9 @@ import {
 import { Useroperations } from "@/repository/User.repository";
 import { AuthService } from "./AuthService";
 import { ORPCError } from "@orpc/client";
+import { TokenService } from "./TokenService";
+import { refreshTokenOperations } from "@/repository/refresh.repository";
+import { error } from "node:console";
 
 class UserFunctions {
     private MAX_ATTEMPTS = 5;
@@ -33,7 +36,7 @@ class UserFunctions {
     async ResetPassword(email: string, token: string, hashedPassword: string) {
         await Useroperations.resetPassword(email, token, hashedPassword);
     }
-    async loginjwtsession(payload: loginInputType) {
+    async loginjwtsession(payload: loginInputType): Promise<{ sessionToken: string, expires: Date, user: { id:string,name:string|null,email:string|null}}> {
         const user = await Useroperations.finduser(payload.email);
         const DUMMY_HASH =
             "$2b$10$CwTycUXWue0Thq9StjUM0uJ8u2i5c5r5r5r5r5r5r5r5r5r5r5r5C";
@@ -83,6 +86,63 @@ class UserFunctions {
                 ? new Date(Date.now() + this.LOCK_DURATION_MS)
                 : undefined;
         await Useroperations.incrementFailedLogin(user.id, lockUntil);
+    }
+    async loginAccessRefresh(payload: { input: loginInputType; agent: string|null }) {
+        if (!payload.agent) { 
+                throw new ORPCError("BAD_REQUEST", { message: "User agent required" });
+            }
+        const user = await Useroperations.finduser(payload.input.email)
+        //verify password
+        const DUMMY_HASH =
+            "$2b$10$CwTycUXWue0Thq9StjUM0uJ8u2i5c5r5r5r5r5r5r5r5r5r5r5r5C";
+        const passwordToCheck = user?.password ?? DUMMY_HASH;
+        const isValid = await AuthService.verifyPassword(
+            payload.input.password,
+            passwordToCheck,
+        );
+        if (!user || !isValid) {
+            //if user is there but somehow password cant be verified
+            if (user) {
+                await this.registerFailedAttempt(user);
+            }
+            throw new ORPCError("UNAUTHORIZED", {
+                message: "invalid credentials",
+            });
+        }
+        if (user.lockedUntil && user.lockedUntil > new Date()) {
+            throw new ORPCError("FORBIDDEN", {
+                message: "Account temporarily locked. Try again later.",
+                data: { reason: "LOCKED" },
+            });
+        }
+        if (!user.emailVerified) {
+            throw new ORPCError("FORBIDDEN", {
+                message: "Please verify your email before logging in.",
+                data: { reason: "UNVERIFIED" },
+            });
+        }
+        //create Assess token
+        const accessToken = TokenService.signAccessToken({
+            sub: user.id,
+            email: user.email
+        })
+        const rawrefreshToken = TokenService.generateRefreshToken()
+        // create Refresh token
+        
+        const refreshToken=await refreshTokenOperations.create({
+            tokenHash: await TokenService.HashToken(rawrefreshToken),
+            userAgent: payload.agent,
+            userId: user.id,
+            createdAt: new Date(),
+            expiresAt:TokenService.getRefreshExpiry()
+        })
+        
+        return {
+            accessToken: accessToken,
+            refreshToken: rawrefreshToken,
+            expires:refreshToken.expiresAt,
+            user: { id: user.id, name: user.name, email: user.email },
+        }
     }
 }
 

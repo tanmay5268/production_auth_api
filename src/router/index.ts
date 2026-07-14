@@ -1,5 +1,5 @@
 import { os } from "./os";
-import { RegisterUser, VerifyToken, ForgotPassword, ResetPassword, LoginJwtSession } from "./auth";
+import { RegisterUser, VerifyToken, ForgotPassword, ResetPassword, LoginJwtSession,LoginAccessRefresh } from "./auth";
 
 export const router = os.router({
     production_auth_api: {
@@ -7,6 +7,7 @@ export const router = os.router({
         verify: VerifyToken,
         forgotPassword: ForgotPassword,
         resetPassword: ResetPassword,
-        loginwithJwtSession: LoginJwtSession
+        loginwithJwtSession: LoginJwtSession,
+        loginAccessRefresh:LoginAccessRefresh
     }
 })
