@@ -1,8 +1,7 @@
-import { os } from "./os";
+import { os,rateLimitMiddleware } from "./os";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
-import { Useroperations } from "@/repository/User.repository";
 
 export const RegisterUser = os.production_auth_api.register.handler(
     async ({ input, errors }) => {
@@ -152,8 +151,9 @@ export const ResetPassword = os.production_auth_api.resetPassword.handler(
     },
 );
 
-export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.handler(
+export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.use(rateLimitMiddleware).handler(
     async ({ input, context, errors }) => {
+
     const result = await UserService.loginjwtsession({
       email: input.email,
       password: input.password,
