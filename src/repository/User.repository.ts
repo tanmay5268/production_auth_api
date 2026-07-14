@@ -8,6 +8,14 @@ import {
 } from "@/schema/auth.schema";
 
 class UserOperations {
+    async findbyid(id: string): Promise<User | null> {
+        const User = await prisma.user.findUnique({
+            where: {
+                id: id,
+            },
+        });
+        return User ? User : null;
+    }
     async finduser(email: string): Promise<User | null> {
         const User = await prisma.user.findUnique({
             where: {

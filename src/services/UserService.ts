@@ -130,7 +130,7 @@ class UserFunctions {
         // create Refresh token
         
         const refreshToken=await refreshTokenOperations.create({
-            tokenHash: await TokenService.HashToken(rawrefreshToken),
+            tokenHash: rawrefreshToken,
             userAgent: payload.agent,
             userId: user.id,
             createdAt: new Date(),
@@ -143,6 +143,45 @@ class UserFunctions {
             expires:refreshToken.expiresAt,
             user: { id: user.id, name: user.name, email: user.email },
         }
+    }
+    async revokeRefreshToken(token: string) {
+        const revoked = await  refreshTokenOperations.revoke(token);
+        if (!revoked) {
+            throw new ORPCError("NOT_FOUND",{
+                data:{
+                    reason:"Refresh token not found or already revoked",
+                    issue:"The provided refresh token does not exist in the database or has already been revoked."
+                }                
+            });
+        }
+        return revoked;
+    }
+    async refreshAccessToken(refreshToken: string) {
+        const tokenRecord = await refreshTokenOperations.findRefreshToken(refreshToken);
+        if (!tokenRecord || tokenRecord.revokedAt) {
+            throw new ORPCError("UNAUTHORIZED", {
+                message: "Invalid or revoked refresh token",
+            });
+        }
+        if (tokenRecord.expiresAt < new Date()) {
+            throw new ORPCError("UNAUTHORIZED", {
+                message: "Refresh token has expired",
+            });
+        }
+        const user = await Useroperations.findbyid(tokenRecord.userId);
+        if (!user) {
+            throw new ORPCError("UNAUTHORIZED", {
+                message: "User associated with the refresh token not found",
+            });
+        }
+        const accessToken = TokenService.signAccessToken({
+            sub: user.id,
+            email: user.email
+        });
+        return {
+            accessToken,
+            user: { id: user.id, name: user.name, email: user.email },
+        };
     }
 }
 

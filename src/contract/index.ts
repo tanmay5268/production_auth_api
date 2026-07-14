@@ -8,6 +8,8 @@ export const contract = {
         forgotPassword: contracts.ForgotPasswordContract,
         resetPassword: contracts.ResetPasswordContract,
         loginwithJwtSession: contracts.loginJwtSessionContract,
-        loginAccessRefresh: contracts.loginAccessRefresh
+        loginAccessRefresh: contracts.loginAccessRefresh,
+        revokeToken: contracts.revokeTokenContract,
+        refreshToken: contracts.refreshTokenContract
     }
 }

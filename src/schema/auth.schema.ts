@@ -62,3 +62,20 @@ export const loginOutputSchema = z.object({
   }),
   // sessionToken is NOT returned in the body — it's set via httpOnly cookie.
 });
+
+export const revokeTokenInputSchema = z.object({
+    refreshToken: z.string(),
+});
+export type revokeTokenInputType = z.infer<typeof revokeTokenInputSchema>
+
+export const revokeTokenOutputSchema = z.object({
+    statusCode: z.literal(200),
+    message: z.literal('Refresh token revoked successfully'),
+});
+export const refreshTokenOutputSchema = z.object({
+    statusCode: z.literal(200),
+    message: z.string()})
+export const refreshTokenInputSchema = z.object({
+    refreshToken: z.string(),
+});
+export type refreshTokenInputType = z.infer<typeof refreshTokenInputSchema>

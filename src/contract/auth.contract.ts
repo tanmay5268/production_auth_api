@@ -131,3 +131,21 @@ export const loginAccessRefresh = base.route({
 })
     .input(schema.loginInputSchema)
     .output(schema.loginOutputSchema);
+
+export const revokeTokenContract = base.route({
+    method: "POST",
+    tags:['auth'],
+    path: "/auth/revokeToken",
+    successStatus: 200,
+    summary:"Revoke RefreshToken",
+    successDescription:"Revoke RefreshToken and remove from database"
+}).input(schema.revokeTokenInputSchema).output(schema.revokeTokenOutputSchema);
+
+export const refreshTokenContract = base.route({
+    method: "POST",
+    tags:['auth'],
+    path: "/auth/refreshToken",
+    successStatus: 200,
+    summary:"Refresh AccessToken",
+    successDescription:"Refresh AccessToken using RefreshToken"
+}).input(schema.refreshTokenInputSchema).output(schema.refreshTokenOutputSchema);

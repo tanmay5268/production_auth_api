@@ -195,18 +195,78 @@ export const LoginAccessRefresh = os.production_auth_api.loginAccessRefresh.hand
         "SameSite=Strict",
         `Expires=${result.expires.toUTCString()}`,
     ].join("; "));
-    
+    const AccessTokenexpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     context.resHeaders.append("Set-Cookie", [
         `accessToken=${result.accessToken}`,
         "Path=/",
         "HttpOnly",
         "Secure",
         "SameSite=Strict",
-        `Expires=${result.expires.toUTCString()}`,
+        `Max-Age=${Math.floor((AccessTokenexpires.getTime() - Date.now()) / 1000)}`,
     ].join("; "));
     return {
       statusCode: 200 ,
       message: "Login successful",
       user: result.user,
     };
+})
+
+export const RevokeToken = os.production_auth_api.revokeToken.handler(async({input, context,errors})=>{
+    const {refreshToken} = input
+    const revoked = await UserService.revokeRefreshToken(refreshToken)
+    if (!revoked) {
+        throw errors.NOT_FOUND({
+            data:{
+                resource:"Refresh token not found or already revoked",
+                issue:"The provided refresh token does not exist in the database or has already been revoked."
+            }
+        });
+    }
+     context.resHeaders.append("Set-Cookie", [
+        `accessToken=${revoked.tokenHash}`,
+        "Path=/",
+        "HttpOnly",
+        "Secure",
+        "SameSite=Strict",
+        `Max-Age=0`,
+    ].join("; "));
+    context.resHeaders.append("Set-Cookie", [
+        `refreshToken=${revoked.tokenHash}`,
+        "Path=/",
+        "HttpOnly",
+        "Secure",
+        "SameSite=Strict",
+        `Max-Age=0`,
+    ].join("; "));
+    return {
+        statusCode: 200,
+        message: "Refresh token revoked successfully"
+    }
+})
+
+export const RefreshToken = os.production_auth_api.refreshToken.handler(async({input, context, errors})=>{
+    const {refreshToken} = input
+    const result = await UserService.refreshAccessToken(refreshToken)
+    if (!result) {
+        throw errors.UNAUTHORIZED({
+            data:{
+                resource:"Refresh token",
+                issue:"Invalid or expired refresh token"
+            }
+        });
+    }
+    // Set new access token in httpOnly cookie
+    const AccessTokenexpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    context.resHeaders.append("Set-Cookie", [
+        `accessToken=${result.accessToken}`,
+        "Path=/",
+        "HttpOnly",
+        "Secure",
+        "SameSite=Strict",
+        `Max-Age=${Math.floor((AccessTokenexpires.getTime() - Date.now()) / 1000)}`,
+    ].join("; "));
+    return {
+        statusCode: 200,
+        message: "Access token refreshed successfully"
+    }
 })

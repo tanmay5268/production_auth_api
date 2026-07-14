@@ -10,22 +10,21 @@ class refreshTokenfunction {
     }) {
         return prisma.refreshToken.create({ data });
     }
-    async findbyhash(tokenHash: string): Promise<RefreshToken | null> {
+    async findRefreshToken(token: string): Promise<RefreshToken | null> {
         const Hash = await prisma.refreshToken.findUnique({
             where: {
-                tokenHash,
+                tokenHash: token,
             },
         });
         return Hash;
     }
-    async revoke(id: string, replacedBy?: string) {
-        return prisma.refreshToken.update({
-            where: { id },
-            data: {
-                revokedAt: new Date(),
-                ...(replacedBy ? { replacedBy } : {}),
-            },
+    async revoke(token: string): Promise<RefreshToken> {
+        const deletedToken = await prisma.refreshToken.delete({
+            where:{
+                tokenHash: token
+            }
         });
+        return deletedToken;
     }
     async revokeAllForUser(userId: string) {
         return prisma.refreshToken.updateMany({
