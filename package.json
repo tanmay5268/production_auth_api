@@ -11,6 +11,7 @@
     "dependencies": {
         "@orpc/client": "^1.14.4",
         "@orpc/contract": "^1.14.4",
+        "@orpc/experimental-ratelimit": "^1.14.8",
         "@orpc/json-schema": "^1.14.4",
         "@orpc/openapi": "^1.14.4",
         "@orpc/server": "^1.14.4",

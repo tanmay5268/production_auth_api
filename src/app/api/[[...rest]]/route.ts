@@ -5,11 +5,15 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { CORSPlugin } from "@orpc/server/plugins";
 import { onError } from "@orpc/server";
 import { router } from "@/router";
+import { RatelimitHandlerPlugin } from '@orpc/experimental-ratelimit'
+import { ratelimiter } from "@/router/os";
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
 
 const handler = new OpenAPIHandler(router, {
-  plugins: [
+    plugins: [
+    // @ts-ignore
+    new RatelimitHandlerPlugin(),
     new CORSPlugin(),
     new SmartCoercionPlugin({ schemaConverters }),
     new OpenAPIReferencePlugin({
@@ -47,7 +51,8 @@ async function handleRequest(request: Request) {
     prefix: "/api",
     context: {
       headers: request.headers,
-      resHeaders,
+        resHeaders,
+        ratelimiter,
     },
   });
 
