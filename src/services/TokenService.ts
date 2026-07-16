@@ -17,7 +17,7 @@ class Tokenfunctions{
             expiresIn:this.ttl
         })
     }
-    verifyAccessToken(token:string) :Tokenpayload {
+        verifyAccessToken(token:string) :Tokenpayload {
         return jwt.verify(token, this.jwtsecret) as Tokenpayload
     }
     generateRefreshToken():string {

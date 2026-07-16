@@ -1,4 +1,4 @@
-import { os,rateLimitMiddleware } from "./os";
+import { os,protectedOs} from "./os";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
@@ -244,7 +244,7 @@ export const RevokeToken = os.production_auth_api.revokeToken.handler(async({inp
     }
 })
 
-export const RefreshToken = os.production_auth_api.refreshToken.handler(async({input, context, errors})=>{
+export const RefreshToken = protectedOs.production_auth_api.refreshToken.handler(async({input, context, errors})=>{
     const {refreshToken} = input
     const result = await UserService.refreshAccessToken(refreshToken)
     if (!result) {

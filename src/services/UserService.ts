@@ -90,8 +90,10 @@ class UserFunctions {
     async loginAccessRefresh(payload: { input: loginInputType; agent: string|null }) {
         if (!payload.agent) { 
                 throw new ORPCError("BAD_REQUEST", { message: "User agent required" });
-            }
+        }
+        console.time("db")
         const user = await Useroperations.finduser(payload.input.email)
+        console.timeEnd("db")
         //verify password
         const DUMMY_HASH =
             "$2b$10$CwTycUXWue0Thq9StjUM0uJ8u2i5c5r5r5r5r5r5r5r5r5r5r5r5C";
