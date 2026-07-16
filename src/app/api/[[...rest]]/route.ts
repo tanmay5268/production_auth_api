@@ -3,18 +3,27 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { SmartCoercionPlugin } from "@orpc/json-schema";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { CORSPlugin } from "@orpc/server/plugins";
+import { LoggingHandlerPlugin } from '@orpc/experimental-pino'
+import pino from 'pino'
 import { onError } from "@orpc/server";
 import { router } from "@/router";
 import { RatelimitHandlerPlugin } from '@orpc/experimental-ratelimit'
 import { ratelimiter } from "@/middlewares/ratelimit";
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
-
+const logger = pino()
 const handler = new OpenAPIHandler(router, {
     plugins: [
     // @ts-ignore
     new RatelimitHandlerPlugin(),
-    new CORSPlugin(),
+        new CORSPlugin(),
+        // @ts-ignore
+    new LoggingHandlerPlugin({
+              logger, // Custom logger instance
+              generateId: ({ request }) => crypto.randomUUID(), // Custom ID generator
+              logRequestResponse: true, // Log request start/end (disabled by default)
+              logRequestAbort: true, // Log when requests are aborted (disabled by default)
+            }),
     new SmartCoercionPlugin({ schemaConverters }),
     new OpenAPIReferencePlugin({
       schemaConverters,

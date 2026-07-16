@@ -1,9 +1,9 @@
-import { os} from "./os";
+import { os,protectedOs} from "./os";
 import { UserService } from "@/services/UserService";
 import { AuthService } from "@/services/AuthService";
 import { EmailService } from "@/services/EmailService";
 
-export const RegisterUser = os.register.handler(
+export const RegisterUser = os.production_auth_api.register.handler(
     async ({ input, errors }) => {
         //business logic goes here
         const { email, name, password } = input;
@@ -49,7 +49,7 @@ export const RegisterUser = os.register.handler(
     },
 );
 
-export const VerifyToken = os.verify.handler(
+export const VerifyToken = os.production_auth_api.verify.handler(
     async ({ input, errors }) => {
         //extract token
         // find token in db get all details
@@ -84,7 +84,7 @@ export const VerifyToken = os.verify.handler(
     },
 );
 
-export const ForgotPassword = os.forgotPassword.handler(
+export const ForgotPassword = os.production_auth_api.forgotPassword.handler(
     async ({ input, errors }) => {
         const { email } = input;
         const userExists = await UserService.UserExists({ email });
@@ -117,7 +117,7 @@ export const ForgotPassword = os.forgotPassword.handler(
     },
 );
 
-export const ResetPassword = os.resetPassword.handler(
+export const ResetPassword = os.production_auth_api.resetPassword.handler(
     async ({ input, errors }) => {
         const { token, password } = input;
         const tokenDetails = await UserService.GetTokenDetails({ token });
@@ -151,7 +151,7 @@ export const ResetPassword = os.resetPassword.handler(
     },
 );
 
-export const LoginJwtSession = os.loginwithJwtSession.handler(
+export const LoginJwtSession = os.production_auth_api.loginwithJwtSession.handler(
     async ({ input, context, errors }) => {
 
     const result = await UserService.loginjwtsession({
@@ -179,7 +179,7 @@ export const LoginJwtSession = os.loginwithJwtSession.handler(
   };
 });
 
-export const LoginAccessRefresh = os.loginAccessRefresh.handler(async ({ context, input }) => {
+export const LoginAccessRefresh = os.production_auth_api.loginAccessRefresh.handler(async ({ context, input }) => {
     const agent = context.headers.get("user-agent")
     const payload = {
         input: input,
@@ -211,7 +211,7 @@ export const LoginAccessRefresh = os.loginAccessRefresh.handler(async ({ context
     };
 })
 
-export const RevokeToken = os.revokeToken.handler(async({input, context,errors})=>{
+export const RevokeToken = os.production_auth_api.revokeToken.handler(async({input, context,errors})=>{
     const {refreshToken} = input
     const revoked = await UserService.revokeRefreshToken(refreshToken)
     if (!revoked) {
@@ -244,7 +244,7 @@ export const RevokeToken = os.revokeToken.handler(async({input, context,errors})
     }
 })
 
-export const RefreshToken = os.refreshToken.handler(async({input, context, errors})=>{
+export const RefreshToken = protectedOs.production_auth_api.refreshToken.handler(async({input, context, errors})=>{
     const {refreshToken} = input
     const result = await UserService.refreshAccessToken(refreshToken)
     if (!result) {

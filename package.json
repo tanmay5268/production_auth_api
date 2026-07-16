@@ -11,6 +11,7 @@
     "dependencies": {
         "@orpc/client": "^1.14.4",
         "@orpc/contract": "^1.14.4",
+        "@orpc/experimental-pino": "^1.14.8",
         "@orpc/experimental-ratelimit": "^1.14.8",
         "@orpc/json-schema": "^1.14.4",
         "@orpc/openapi": "^1.14.4",
@@ -25,6 +26,7 @@
         "mailersend": "^3.0.0",
         "next": "16.2.7",
         "pg": "^8.21.0",
+        "pino": "^10.3.1",
         "react": "19.2.7",
         "react-dom": "19.2.7",
         "react-email": "^6.5.0",
