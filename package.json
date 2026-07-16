@@ -5,8 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
-        "start": "next start"
+        "build": "prisma dlx generate && next build",
+        "start": "next start",
+        "postinstall": "prisma dlx generate"
     },
     "dependencies": {
         "@orpc/client": "^1.14.4",
