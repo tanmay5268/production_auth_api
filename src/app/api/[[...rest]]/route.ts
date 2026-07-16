@@ -6,7 +6,7 @@ import { CORSPlugin } from "@orpc/server/plugins";
 import { onError } from "@orpc/server";
 import { router } from "@/router";
 import { RatelimitHandlerPlugin } from '@orpc/experimental-ratelimit'
-import { ratelimiter } from "@/router/os";
+import { ratelimiter } from "@/middlewares/ratelimit";
 
 const schemaConverters = [new ZodToJsonSchemaConverter()];
 
